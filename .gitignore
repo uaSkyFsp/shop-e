@@ -1,0 +1,12 @@
+node_modules
+/dist
+.env
+.DS_Store
+
+server/orders.db
+server/orders.db-shm
+server/orders.db-wal
+
+server/orders.db
+server/orders.db-shm
+server/orders.db-wal
