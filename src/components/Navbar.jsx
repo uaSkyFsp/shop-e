@@ -38,7 +38,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg shadow-[0_10px_40px_-35px_rgba(15,23,42,0.5)] dark:bg-[#111527]/80">
       <div className="section-padding flex h-20 items-center justify-between">
         <NavLink to="/" className="text-lg font-semibold tracking-tight">
-          Valencia Vape Atelier
+          Valencia Premium Store
         </NavLink>
         <nav className="hidden items-center gap-8 text-sm font-medium md:flex">
           {links.map((link) => (

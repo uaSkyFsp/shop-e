@@ -1,6 +1,6 @@
-# Valencia Vape Atelier
+# Valencia Premium Store
 
-Vape shop storefront built with React (Vite), Tailwind, Framer Motion, and a Node/Express backend.
+Premium storefront built with React (Vite), Tailwind, Framer Motion, and a Node/Express backend.
 
 ## What Is Implemented
 - Catalog management from admin panel (create/edit/delete products)
@@ -42,7 +42,7 @@ Backend: `http://localhost:4000`
 - `SMTP_SECURE=true|false`
 - `SMTP_USER=...`
 - `SMTP_PASS=...`
-- `SMTP_FROM=Valencia Vape Atelier <ops@yourdomain.com>`
+- `SMTP_FROM=Valencia Premium Store <ops@yourdomain.com>`
 - `ORDER_NOTIFY_EMAIL=sales@yourdomain.com` (optional)
 - `ADMIN_USER=admin`
 - `ADMIN_PASSWORD=...`

@@ -118,4 +118,34 @@ const seedDefaultProducts = () => {
 
 seedDefaultProducts();
 
+const syncProductCatalog = () => {
+  const update = db.prepare(
+    `UPDATE products
+      SET name = ?, description = ?, category = ?, brand = ?, images_json = ?, specs_json = ?, flavors_json = ?, colors_json = ?, updated_at = ?
+      WHERE id = ?`
+  );
+
+  const tx = db.transaction((items) => {
+    const timestamp = Date.now();
+    for (const product of items) {
+      update.run(
+        product.name,
+        product.description,
+        product.category,
+        product.brand,
+        JSON.stringify(product.images || []),
+        JSON.stringify(product.specs || []),
+        JSON.stringify(product.flavors || [product.flavor].filter(Boolean)),
+        JSON.stringify(product.colors || []),
+        timestamp,
+        product.id
+      );
+    }
+  });
+
+  tx(seedProducts);
+};
+
+syncProductCatalog();
+
 export default db;

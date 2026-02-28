@@ -6,13 +6,13 @@ import { useLanguage } from "../context/LanguageContext.jsx";
 const copy = {
   en: {
     title: "Age Verification",
-    subtitle: "You must be 18+ to enter Valencia Vape Atelier. Please confirm your age.",
+    subtitle: "You must be 18+ to enter Valencia Premium Store. Please confirm your age.",
     confirm: "I am 18+",
     exit: "Exit"
   },
   es: {
     title: "Verificación de edad",
-    subtitle: "Debes tener 18+ para entrar a Valencia Vape Atelier. Confirma tu edad.",
+    subtitle: "Debes tener 18+ para entrar a Valencia Premium Store. Confirma tu edad.",
     confirm: "Tengo 18+",
     exit: "Salir"
   }

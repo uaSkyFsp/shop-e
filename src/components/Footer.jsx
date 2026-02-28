@@ -5,18 +5,18 @@ import { Link } from "react-router-dom";
 const copy = {
   en: {
     description:
-      "Premium vape shop in Valencia with curated products, expert consultations, and friendly service.",
+      "Premium product store in Valencia with curated products, expert consultations, and friendly service.",
     contact: "Contact",
     follow: "Follow",
-    rights: "© 2026 Valencia Vape Atelier. All rights reserved.",
+    rights: "© 2026 Valencia Premium Store. All rights reserved.",
     legal: "Legal"
   },
   es: {
     description:
-      "Tienda premium de vapeo en Valencia con productos seleccionados, asesoramiento experto y servicio cercano.",
+      "Tienda premium de productos en Valencia con selección cuidada, asesoramiento experto y servicio cercano.",
     contact: "Contacto",
     follow: "Síguenos",
-    rights: "© 2026 Valencia Vape Atelier. Todos los derechos reservados.",
+    rights: "© 2026 Valencia Premium Store. Todos los derechos reservados.",
     legal: "Legal"
   }
 };
@@ -29,14 +29,14 @@ export default function Footer() {
     <footer className="section-padding mt-20 border-t border-white/50 bg-white/60 py-12 dark:bg-white/5">
       <div className="grid gap-10 md:grid-cols-3">
         <div>
-          <p className="text-lg font-semibold">Valencia Vape Atelier</p>
+          <p className="text-lg font-semibold">Valencia Premium Store</p>
           <p className="mt-3 text-sm text-ink/70">{t.description}</p>
         </div>
         <div>
           <p className="text-sm font-semibold">{t.contact}</p>
           <p className="mt-3 text-sm text-ink/70">Carrer de Colon 101, Valencia</p>
           <p className="text-sm text-ink/70">+34 600 123 456</p>
-          <p className="text-sm text-ink/70">hello@valenciavape.com</p>
+          <p className="text-sm text-ink/70">hello@valenciastore.com</p>
         </div>
         <div>
           <p className="text-sm font-semibold">{t.follow}</p>

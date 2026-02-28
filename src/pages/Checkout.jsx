@@ -94,7 +94,7 @@ export default function Checkout() {
   const [orderStatus, setOrderStatus] = useState("");
 
   useEffect(() => {
-    document.title = "Checkout | Valencia Vape Atelier";
+    document.title = "Checkout | Valencia Premium Store";
   }, []);
 
   const order = useMemo(

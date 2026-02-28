@@ -5,7 +5,7 @@ import { team } from "../data/content.js";
 
 export default function About() {
   useEffect(() => {
-    document.title = "About | Valencia Vape Atelier";
+    document.title = "About | Valencia Premium Store";
   }, []);
 
   return (
@@ -19,10 +19,10 @@ export default function About() {
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-2xl bg-white/70 p-6 shadow-soft">
             <p className="text-sm text-ink/70">
-              Valencia Vape Atelier is a premium boutique focused on refined service, clean aesthetics, and the
-              best devices available. We keep our selection tight and thoughtful so every recommendation feels
-              right. Whether you are starting your journey or upgrading your setup, our specialists curate a
-              personalized ritual.
+              Valencia Premium Store is a premium boutique focused on refined service, clean aesthetics, and
+              high-quality products. We keep our selection thoughtful so every recommendation feels right.
+              Whether you are starting your journey or upgrading your setup, our specialists curate a
+              personalized experience.
             </p>
             <p className="mt-4 text-sm text-ink/70">
               Our Valencia store is designed to feel calm and elevated. Expect a relaxed lounge atmosphere,
@@ -44,7 +44,7 @@ export default function About() {
       <section className="section-padding py-16">
         <SectionTitle
           eyebrow="Team"
-          title="Meet the atelier specialists"
+          title="Meet the store specialists"
           subtitle="Your experience is guided by experts who know the craft intimately."
         />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

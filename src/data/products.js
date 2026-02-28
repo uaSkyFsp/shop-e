@@ -1,12 +1,12 @@
 export const products = [
   {
     id: "luma-pod",
-    name: "Luma Pod Pro",
+    name: "Product 1",
     price: 19.9,
-    description: "Compact pod system with crisp flavor delivery.",
-    category: "Pods",
-    brand: "Luma",
-    flavor: "Mint",
+    description: "Compact premium product.",
+    category: "Category A",
+    brand: "Brand 1",
+    flavor: "Option 1",
     images: [
       "https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=900&q=80",
       "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80"
@@ -16,42 +16,42 @@ export const products = [
   },
   {
     id: "elf-neo",
-    name: "Elf Neo Crystal",
+    name: "Product 2",
     price: 14.5,
-    description: "Bright crystalline disposable with 6000 puffs.",
-    category: "Disposables",
-    brand: "Elf",
-    flavor: "Blueberry Ice",
+    description: "Reliable product for daily use.",
+    category: "Category B",
+    brand: "Brand 2",
+    flavor: "Option 2",
     images: [
       "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80",
       "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80"
     ],
     stock: true,
-    specs: ["6000 puffs", "Mesh coil", "Sleek crystal finish"]
+    specs: ["6000 cycles", "Mesh core", "Crystal finish"]
   },
   {
     id: "valencia-liquid",
-    name: "Valencia Citrus Blend",
+    name: "Product 3",
     price: 12.0,
-    description: "Silky citrus liquid with sunny undertones.",
-    category: "Liquids",
-    brand: "Atelier",
-    flavor: "Citrus",
+    description: "Balanced product with clean finish.",
+    category: "Category C",
+    brand: "Brand 3",
+    flavor: "Option 3",
     images: [
       "https://images.unsplash.com/photo-1514996937319-344454492b37?auto=format&fit=crop&w=900&q=80",
       "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80"
     ],
     stock: true,
-    specs: ["50/50 VG/PG", "10 ml", "Silky throat hit"]
+    specs: ["50/50 ratio", "10 ml", "Silky finish"]
   },
   {
     id: "aurora-vape",
-    name: "Aurora Luxe Kit",
+    name: "Product 4",
     price: 54.0,
-    description: "Premium starter kit with elegant glow.",
-    category: "Accessories",
-    brand: "Aurora",
-    flavor: "Neutral",
+    description: "Premium starter product.",
+    category: "Category D",
+    brand: "Brand 4",
+    flavor: "Option 4",
     images: [
       "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
       "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80"
@@ -61,54 +61,54 @@ export const products = [
   },
   {
     id: "halo-pod",
-    name: "Halo Air Pod",
+    name: "Product 5",
     price: 22.0,
-    description: "Lightweight pod system with airy draw.",
-    category: "Pods",
-    brand: "Halo",
-    flavor: "Tropical",
+    description: "Lightweight product with smooth operation.",
+    category: "Category A",
+    brand: "Brand 5",
+    flavor: "Option 5",
     images: [
       "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80"
     ],
     stock: true,
-    specs: ["Adjustable airflow", "LED glow", "Quick swap pods"]
+    specs: ["Adjustable airflow", "LED glow", "Quick swap parts"]
   },
   {
     id: "misty-liquid",
-    name: "Misty Rose",
+    name: "Product 6",
     price: 11.5,
-    description: "Rose-infused liquid with soft sweetness.",
-    category: "Liquids",
-    brand: "Atelier",
-    flavor: "Floral",
+    description: "Soft-touch premium product.",
+    category: "Category C",
+    brand: "Brand 3",
+    flavor: "Option 6",
     images: [
       "https://images.unsplash.com/photo-1514996937319-344454492b37?auto=format&fit=crop&w=900&q=80"
     ],
     stock: true,
-    specs: ["70/30 VG/PG", "10 ml", "Silky finish"]
+    specs: ["70/30 ratio", "10 ml", "Silky finish"]
   },
   {
     id: "pulse-disposable",
-    name: "Pulse Wave",
+    name: "Product 7",
     price: 16.0,
-    description: "Bold disposable with glowing shell.",
-    category: "Disposables",
-    brand: "Pulse",
-    flavor: "Mango",
+    description: "Bold product with modern design.",
+    category: "Category B",
+    brand: "Brand 6",
+    flavor: "Option 7",
     images: [
       "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80"
     ],
     stock: true,
-    specs: ["5000 puffs", "LED halo", "Rich flavor"]
+    specs: ["5000 cycles", "LED halo", "Rich output"]
   },
   {
     id: "atelier-case",
-    name: "Atelier Carry Case",
+    name: "Product 8",
     price: 18.5,
-    description: "Soft-touch case for pods and essentials.",
-    category: "Accessories",
-    brand: "Atelier",
-    flavor: "Neutral",
+    description: "Protective premium product case.",
+    category: "Category D",
+    brand: "Brand 3",
+    flavor: "Option 4",
     images: [
       "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80"
     ],
@@ -117,6 +117,6 @@ export const products = [
   }
 ];
 
-export const categories = ["Pods", "Liquids", "Disposables", "Accessories"];
-export const brands = ["Luma", "Elf", "Atelier", "Aurora", "Halo", "Pulse"];
-export const flavors = ["Mint", "Blueberry Ice", "Citrus", "Tropical", "Floral", "Mango", "Neutral"];
+export const categories = ["Category A", "Category B", "Category C", "Category D"];
+export const brands = ["Brand 1", "Brand 2", "Brand 3", "Brand 4", "Brand 5", "Brand 6"];
+export const flavors = ["Option 1", "Option 2", "Option 3", "Option 4", "Option 5", "Option 6", "Option 7"];

@@ -19,7 +19,7 @@ export default function Product() {
 
   useEffect(() => {
     if (product) {
-      document.title = `${product.name} | Valencia Vape Atelier`;
+      document.title = `${product.name} | Valencia Premium Store`;
       setSelected(product.images?.[0]);
       setFlavor(product.flavors?.[0] || null);
       setColor(product.colors?.[0] || null);
@@ -85,7 +85,7 @@ export default function Product() {
             </p>
             <p className="mt-4 text-sm text-ink/70">{product.description}</p>
             <div className="mt-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ink/50">Flavor</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ink/50">Option</p>
               <div className="mt-3 flex flex-wrap gap-3">
                 {(product.flavors || []).map((option) => (
                   <button

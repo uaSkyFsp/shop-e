@@ -16,7 +16,7 @@ export default function Shop() {
   const [sort, setSort] = useState("newest");
 
   useEffect(() => {
-    document.title = "Shop | Valencia Vape Atelier";
+    document.title = "Shop | Valencia Premium Store";
   }, []);
 
   const filteredProducts = useMemo(() => {
@@ -66,7 +66,7 @@ export default function Shop() {
         <SectionTitle
           eyebrow="Shop"
           title="Choose your signature glow"
-          subtitle="Pods, liquids, disposables, and accessories curated for a premium daily ritual."
+          subtitle="Premium products and accessories curated for a premium daily ritual."
         />
         <FilterBar
           filters={filters}

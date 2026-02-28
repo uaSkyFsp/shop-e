@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import PageWrapper from "../components/PageWrapper.jsx";
 import SectionTitle from "../components/SectionTitle.jsx";
 import Button from "../components/Button.jsx";
@@ -39,9 +39,8 @@ const parseApiResponse = async (response) => {
 
 export default function Admin() {
   const { lang } = useLanguage();
-  const [legacyToken, setLegacyToken] = useState("");
-  const [username, setUsername] = useState("admin");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("admin1");
+  const [password, setPassword] = useState("change_me_admin_password");
   const [jwtToken, setJwtToken] = useState(localStorage.getItem(JWT_KEY) || "");
 
   const [orders, setOrders] = useState([]);
@@ -52,14 +51,8 @@ export default function Admin() {
   const [productForm, setProductForm] = useState(emptyProduct);
   const [editingId, setEditingId] = useState("");
 
-  const authHeaders = useMemo(() => {
-    if (jwtToken) {
-      return { Authorization: `Bearer ${jwtToken}`, "Content-Type": "application/json" };
-    }
-    return { "x-admin-token": legacyToken, "Content-Type": "application/json" };
-  }, [jwtToken, legacyToken]);
-
-  const hasAnyAuth = Boolean(jwtToken || legacyToken);
+  const authHeaders = { Authorization: `Bearer ${jwtToken}`, "Content-Type": "application/json" };
+  const hasAnyAuth = Boolean(jwtToken);
 
   const login = async () => {
     setStatus("Signing in...");
@@ -73,6 +66,14 @@ export default function Admin() {
       if (!response.ok) throw new Error(data.error || "Login failed");
       setJwtToken(data.token);
       localStorage.setItem(JWT_KEY, data.token);
+      await Promise.all([
+        fetch(`${API_BASE}/api/admin/orders`, { headers: { Authorization: `Bearer ${data.token}` } })
+          .then(parseApiResponse)
+          .then((payload) => setOrders(payload.orders || [])),
+        fetch(`${API_BASE}/api/products`)
+          .then(parseApiResponse)
+          .then((payload) => setProducts(payload.products || []))
+      ]);
       setStatus("Signed in");
     } catch (error) {
       setStatus(error.message);
@@ -87,7 +88,7 @@ export default function Admin() {
 
   const fetchOrders = async () => {
     const response = await fetch(`${API_BASE}/api/admin/orders`, {
-      headers: jwtToken ? { Authorization: `Bearer ${jwtToken}` } : { "x-admin-token": legacyToken }
+      headers: { Authorization: `Bearer ${jwtToken}` }
     });
     const data = await parseApiResponse(response);
     if (!response.ok) throw new Error(data.error || "Failed to load orders");
@@ -117,9 +118,7 @@ export default function Admin() {
     try {
       const response = await fetch(`${API_BASE}/api/admin/orders/${orderId}/complete`, {
         method: "POST",
-        headers: jwtToken
-          ? { Authorization: `Bearer ${jwtToken}` }
-          : { "x-admin-token": legacyToken }
+        headers: { Authorization: `Bearer ${jwtToken}` }
       });
       const data = await parseApiResponse(response);
       if (!response.ok) throw new Error(data.error || "Failed to complete order");
@@ -206,7 +205,7 @@ export default function Admin() {
     try {
       const response = await fetch(`${API_BASE}/api/admin/products/${id}`, {
         method: "DELETE",
-        headers: jwtToken ? { Authorization: `Bearer ${jwtToken}` } : { "x-admin-token": legacyToken }
+        headers: { Authorization: `Bearer ${jwtToken}` }
       });
       const data = await parseApiResponse(response);
       if (!response.ok) throw new Error(data.error || "Failed to delete product");
@@ -266,13 +265,6 @@ export default function Admin() {
             </Button>
           </div>
           <div className="mt-3 flex flex-wrap gap-3">
-            <input
-              className="rounded-2xl border border-ink/10 px-4"
-              placeholder="legacy admin token (optional)"
-              type="password"
-              value={legacyToken}
-              onChange={(event) => setLegacyToken(event.target.value)}
-            />
             <Button onClick={loadDashboard} disabled={!hasAnyAuth}>
               Load admin data
             </Button>

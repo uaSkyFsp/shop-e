@@ -1,8 +1,8 @@
 export const testimonials = [
   {
     name: "Elena M.",
-    quote: "The consultation was unreal. They matched my flavor perfectly.",
-    title: "Flavor Enthusiast"
+    quote: "The consultation was excellent and the recommendations were perfect.",
+    title: "Premium Shopper"
   },
   {
     name: "Carlos R.",
@@ -11,7 +11,7 @@ export const testimonials = [
   },
   {
     name: "Priya K.",
-    quote: "Premium vibe and the smoothest disposables I have tried.",
+    quote: "Premium vibe and very high product quality.",
     title: "Weekend Shopper"
   }
 ];
@@ -31,7 +31,7 @@ export const team = [
   },
   {
     name: "Mateo Ruiz",
-    role: "Flavor Curator",
+    role: "Product Curator",
     photo: "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=600&q=80"
   },
   {

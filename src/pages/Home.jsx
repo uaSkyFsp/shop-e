@@ -13,7 +13,7 @@ export default function Home() {
   const { products } = useProducts();
 
   useEffect(() => {
-    document.title = "Valencia Vape Atelier | Premium Vape Experience";
+    document.title = "Valencia Premium Store | Premium Product Experience";
   }, []);
 
   return (
@@ -23,11 +23,11 @@ export default function Home() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.35em] text-aurora-500">Valencia</p>
             <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-5xl">
-              Premium Vape Experience in Valencia
+              Premium Product Experience in Valencia
             </h1>
             <p className="mt-4 max-w-xl text-base text-ink/70">
-              Expert consultation, curated flavors, and the best prices on top-tier devices. Discover the
-              smoothest experience tailored just for you.
+              Expert consultation, curated catalog, and the best prices on top-tier products. Discover a
+              premium shopping experience tailored for you.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link to="/shop">
@@ -40,7 +40,7 @@ export default function Home() {
             <div className="mt-10 grid gap-6 sm:grid-cols-3">
               {[
                 { label: "Top Brands", value: "40+" },
-                { label: "Flavor Profiles", value: "120" },
+                { label: "Product Options", value: "120" },
                 { label: "Happy Customers", value: "9.6k" }
               ].map((stat) => (
                 <div key={stat.label} className="rounded-2xl bg-white/70 p-4 shadow-soft">
@@ -55,7 +55,7 @@ export default function Home() {
             <div className="absolute bottom-0 left-10 h-48 w-48 rounded-full bg-ocean-300 opacity-60 blur-orb" />
             <img
               src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80"
-              alt="Premium vape device"
+              alt="Premium product"
               className="relative z-10 h-[420px] w-full rounded-[2rem] object-cover shadow-card"
             />
           </div>
@@ -66,7 +66,7 @@ export default function Home() {
         <SectionTitle
           eyebrow="Featured"
           title="Curated essentials for every mood"
-          subtitle="Explore our handpicked selection with the cleanest flavor delivery and premium design finishes."
+          subtitle="Explore our handpicked selection with premium quality and modern design finishes."
         />
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {products.slice(0, 4).map((product) => (
@@ -79,7 +79,7 @@ export default function Home() {
         <SectionTitle
           eyebrow="Why Choose Us"
           title="A team that treats every session like a ritual"
-          subtitle="We match you with the right device, the perfect flavor, and a service experience that feels truly premium."
+          subtitle="We match you with the right product and a service experience that feels truly premium."
         />
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {[
@@ -89,7 +89,7 @@ export default function Home() {
             },
             {
               title: "Big Selection",
-              text: "Elite pods, liquids, and disposables ready to try."
+              text: "Wide product catalog ready to explore."
             },
             {
               title: "Friendly Staff",
@@ -113,8 +113,8 @@ export default function Home() {
           <div>
             <SectionTitle
               eyebrow="Testimonials"
-              title="Loved by Valencia's vaping community"
-              subtitle="Smooth service, standout devices, and a team that genuinely cares."
+              title="Loved by Valencia's shopping community"
+              subtitle="Great service, standout products, and a team that genuinely cares."
             />
           </div>
           <TestimonialSlider testimonials={testimonials} />
@@ -138,7 +138,7 @@ export default function Home() {
         />
         <div className="overflow-hidden rounded-2xl shadow-soft">
           <iframe
-            title="Valencia Vape Atelier map"
+            title="Valencia Premium Store map"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3080.102924437118!2d-0.3773936846560591!3d39.46880117948571!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd604f4c7f2b54b3%3A0x345b0375b0213a1c!2sCarrer%20de%20Col%C3%B3n%2C%20101%2C%20Valencia!5e0!3m2!1sen!2ses!4v1700000000000"
             width="100%"
             height="360"
