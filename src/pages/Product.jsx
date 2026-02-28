@@ -15,6 +15,7 @@ export default function Product() {
   const [selected, setSelected] = useState(product?.images?.[0]);
   const [flavor, setFlavor] = useState(product?.flavors?.[0] || null);
   const [color, setColor] = useState(product?.colors?.[0] || null);
+  const isAvailable = Boolean(product?.stock) && Number(product?.stockQty ?? 0) > 0;
 
   useEffect(() => {
     if (product) {
@@ -79,8 +80,8 @@ export default function Product() {
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-aurora-500">{product.brand}</p>
             <h1 className="mt-3 text-3xl font-semibold">{product.name}</h1>
             <p className="mt-4 text-lg font-semibold">€{product.price.toFixed(2)}</p>
-            <p className={`mt-2 text-sm ${product.stock ? "text-emerald-500" : "text-rose-500"}`}>
-              {product.stock ? "In Stock" : "Out of Stock"}
+            <p className={`mt-2 text-sm ${isAvailable ? "text-emerald-500" : "text-rose-500"}`}>
+              {isAvailable ? "In Stock" : "Out of Stock"}
             </p>
             <p className="mt-4 text-sm text-ink/70">{product.description}</p>
             <div className="mt-6">
@@ -122,8 +123,8 @@ export default function Product() {
               </div>
             )}
             <div className="mt-8 flex flex-wrap gap-4">
-              <Button onClick={() => addItem(product, 1, flavor, color)} disabled={!product.stock}>
-                Add to Cart
+              <Button onClick={() => addItem(product, 1, flavor, color)} disabled={!isAvailable}>
+                {isAvailable ? "Add to Cart" : "Unavailable"}
               </Button>
               <Button variant="secondary">Book Consultation</Button>
             </div>

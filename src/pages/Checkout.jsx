@@ -11,9 +11,9 @@ const copy = {
   en: {
     eyebrow: "Checkout",
     title: "Reserve your items",
-    subtitle: "Fill your details, confirm the code from email, and reserve products for pickup.",
+    subtitle: "Fill your details and reserve products for pickup.",
     doneTitle: "Reservation created",
-    doneText: "Reservation ID: #{id}. We sent instructions to {email}.",
+    doneText: "Reservation ID: #{id}. Please come to the store within 7 days to pay and collect.",
     continue: "Continue shopping",
     details: "Reservation details",
     email: "Email address",
@@ -24,16 +24,10 @@ const copy = {
     pickupAddress: "Pickup at: Carrer de Colon 101, Valencia.",
     paymentInfo: "Payment in store",
     paymentHint: "You will pay in the store when collecting your reservation.",
-    sendCode: "Send code",
-    openConfirm: "Open reservation confirmation",
+    reserveNow: "Reserve now",
     summary: "Reservation summary",
     qty: "Qty",
     total: "Total",
-    otpTitle: "Code verification",
-    otpText: "Enter the code sent to your email.",
-    otpPlaceholder: "Code from email",
-    resend: "Send again",
-    verify: "Verify code",
     confirmTitle: "Confirm reservation",
     pickup: "Pickup",
     amount: "Estimated total",
@@ -48,9 +42,9 @@ const copy = {
   es: {
     eyebrow: "Checkout",
     title: "Reservar productos",
-    subtitle: "Completa tus datos, confirma el código por email y reserva para recogida.",
+    subtitle: "Completa tus datos y reserva para recogida.",
     doneTitle: "Reserva creada",
-    doneText: "ID de reserva: #{id}. Enviamos instrucciones a {email}.",
+    doneText: "ID de reserva: #{id}. Ven a la tienda en un plazo de 7 días para pagar y recoger.",
     continue: "Seguir comprando",
     details: "Datos de reserva",
     email: "Correo electrónico",
@@ -61,16 +55,10 @@ const copy = {
     pickupAddress: "Recogida en: Carrer de Colon 101, Valencia.",
     paymentInfo: "Pago en tienda",
     paymentHint: "Pagarás en la tienda al recoger la reserva.",
-    sendCode: "Enviar código",
-    openConfirm: "Abrir confirmación de reserva",
+    reserveNow: "Reservar ahora",
     summary: "Resumen de reserva",
     qty: "Cant.",
     total: "Total",
-    otpTitle: "Verificación de código",
-    otpText: "Introduce el código enviado a tu correo.",
-    otpPlaceholder: "Código del email",
-    resend: "Reenviar",
-    verify: "Verificar código",
     confirmTitle: "Confirmar reserva",
     pickup: "Recogida",
     amount: "Total estimado",
@@ -99,11 +87,6 @@ export default function Checkout() {
   const t = copy[lang];
 
   const [email, setEmail] = useState("");
-  const [verificationId, setVerificationId] = useState("");
-  const [otp, setOtp] = useState("");
-  const [otpToken, setOtpToken] = useState("");
-  const [otpStatus, setOtpStatus] = useState("");
-  const [showOtpModal, setShowOtpModal] = useState(false);
   const [showReserveModal, setShowReserveModal] = useState(false);
   const [reserving, setReserving] = useState(false);
   const [customer, setCustomer] = useState({ name: "", phone: "" });
@@ -129,45 +112,10 @@ export default function Checkout() {
     [customer, email, items, total]
   );
 
-  const canRequestOtp = Boolean(email) && Boolean(customer.name) && Boolean(customer.phone);
-
-  const requestOtp = async () => {
-    setOtpStatus("Sending code...");
-    const response = await fetch(`${API_BASE}/api/otp/request`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email })
-    });
-    const data = await parseApiResponse(response);
-    if (response.ok) {
-      setVerificationId(data.verificationId);
-      setOtpStatus("Code sent to your email.");
-      setShowOtpModal(true);
-    } else {
-      setOtpStatus(data.error || "Failed to send code.");
-    }
-  };
-
-  const verifyOtp = async () => {
-    setOtpStatus("Verifying...");
-    const response = await fetch(`${API_BASE}/api/otp/verify`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ verificationId, code: otp })
-    });
-    const data = await parseApiResponse(response);
-    if (response.ok) {
-      setOtpToken(data.otpToken);
-      setOtpStatus("Email verified.");
-      setShowOtpModal(false);
-      setShowReserveModal(true);
-    } else {
-      setOtpStatus(data.error || "Invalid code.");
-    }
-  };
+  const canReserve = Boolean(email) && Boolean(customer.name) && Boolean(customer.phone);
 
   const placeReservation = async () => {
-    if (!otpToken) return;
+    if (!canReserve) return;
 
     setReserving(true);
     setOrderStatus("Creating reservation...");
@@ -177,7 +125,6 @@ export default function Checkout() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          otpToken,
           order,
           fulfillmentType: "pickup"
         })
@@ -262,19 +209,10 @@ export default function Checkout() {
                 </div>
 
                 <div className="mt-6">
-                  {!otpToken && (
-                    <Button className="w-full" onClick={requestOtp} disabled={!canRequestOtp}>
-                      {t.sendCode}
-                    </Button>
-                  )}
-                  {otpToken && (
-                    <Button className="w-full" onClick={() => setShowReserveModal(true)}>
-                      {t.openConfirm}
-                    </Button>
-                  )}
-                  {(otpStatus || orderStatus) && (
-                    <p className="mt-3 text-xs text-ink/60">{orderStatus || otpStatus}</p>
-                  )}
+                  <Button className="w-full" onClick={() => setShowReserveModal(true)} disabled={!canReserve}>
+                    {t.reserveNow}
+                  </Button>
+                  {orderStatus && <p className="mt-3 text-xs text-ink/60">{orderStatus}</p>}
                 </div>
               </div>
             </div>
@@ -308,37 +246,6 @@ export default function Checkout() {
         )}
       </section>
 
-      {showOtpModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-soft">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">{t.otpTitle}</h3>
-              <button onClick={() => setShowOtpModal(false)} className="text-sm text-ink/60">
-                {t.close}
-              </button>
-            </div>
-            <div className="mt-4 space-y-3">
-              <p className="text-sm text-ink/70">{t.otpText}</p>
-              <input
-                className="w-full rounded-2xl border border-ink/10"
-                placeholder={t.otpPlaceholder}
-                value={otp}
-                onChange={(event) => setOtp(event.target.value)}
-              />
-              <div className="flex gap-3">
-                <Button variant="secondary" onClick={requestOtp}>
-                  {t.resend}
-                </Button>
-                <Button onClick={verifyOtp} disabled={!verificationId || !otp}>
-                  {t.verify}
-                </Button>
-              </div>
-              {otpStatus && <p className="text-xs text-ink/60">{otpStatus}</p>}
-            </div>
-          </div>
-        </div>
-      )}
-
       {showReserveModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur">
           <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-soft">
@@ -355,7 +262,7 @@ export default function Checkout() {
               </p>
               <p>{t.confirmText}</p>
             </div>
-            <Button className="mt-6 w-full" onClick={placeReservation} disabled={!otpToken || reserving}>
+            <Button className="mt-6 w-full" onClick={placeReservation} disabled={!canReserve || reserving}>
               {reserving ? t.reserving : t.reserve}
             </Button>
           </div>

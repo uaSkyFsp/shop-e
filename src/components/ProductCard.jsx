@@ -8,6 +8,7 @@ export default function ProductCard({ product }) {
   const { addItem } = useCart();
   const defaultFlavor = product.flavors?.[0] || product.flavor || null;
   const defaultColor = product.colors?.[0] || null;
+  const isAvailable = Boolean(product.stock) && Number(product.stockQty ?? 0) > 0;
 
   return (
     <motion.div
@@ -27,8 +28,18 @@ export default function ProductCard({ product }) {
         </div>
       </Link>
       <div className="mt-4 flex items-center justify-between">
-        <p className="text-lg font-semibold">€{product.price.toFixed(2)}</p>
-        <Button onClick={() => addItem(product, 1, defaultFlavor, defaultColor)}>Add to Cart</Button>
+        <div>
+          <p className="text-lg font-semibold">€{product.price.toFixed(2)}</p>
+          <p className={`text-xs ${isAvailable ? "text-emerald-600" : "text-rose-500"}`}>
+            {isAvailable ? "In stock" : "Out of stock"}
+          </p>
+        </div>
+        <Button
+          onClick={() => addItem(product, 1, defaultFlavor, defaultColor)}
+          disabled={!isAvailable}
+        >
+          {isAvailable ? "Add to Cart" : "Unavailable"}
+        </Button>
       </div>
     </motion.div>
   );

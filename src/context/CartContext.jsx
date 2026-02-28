@@ -23,6 +23,9 @@ export function CartProvider({ children }) {
   }, [items]);
 
   const addItem = (product, qty = 1, flavor = null, color = null) => {
+    const isAvailable = Boolean(product?.stock) && Number(product?.stockQty ?? 0) > 0;
+    if (!isAvailable) return;
+
     setItems((prev) => {
       const matchIndex = prev.findIndex(
         (item) => item.id === product.id && item.flavor === flavor && item.color === color

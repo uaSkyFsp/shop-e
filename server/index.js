@@ -157,6 +157,19 @@ const mapProductRow = (row) => ({
   updated_at: row.updated_at
 });
 
+const normalizeList = (value) =>
+  Array.isArray(value)
+    ? value
+        .map((item) => String(item).trim())
+        .filter(Boolean)
+    : [];
+
+const parseStockQty = (value, fallback = 0) => {
+  if (value === undefined || value === null || value === "") return fallback;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed >= 0 ? Math.floor(parsed) : NaN;
+};
+
 app.post(
   "/api/admin/login",
   rateLimit({
@@ -208,21 +221,14 @@ app.get("/api/admin/orders", (req, res) => {
 
 app.post("/api/place-order", async (req, res) => {
   try {
-    requireEmailEnv();
-
-    const { otpToken, order, fulfillmentType } = req.body || {};
-    if (!otpToken || !order || !fulfillmentType) {
+    const { order, fulfillmentType } = req.body || {};
+    if (!order || !fulfillmentType) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
     const allowedFulfillment = ["pickup"];
     if (!allowedFulfillment.includes(fulfillmentType)) {
       return res.status(400).json({ error: "Invalid fulfillment type" });
-    }
-
-    const otpRecord = db.prepare("SELECT * FROM otp_requests WHERE token = ?").get(otpToken);
-    if (!otpRecord || otpRecord.token_expires_at < now()) {
-      return res.status(403).json({ error: "OTP verification required" });
     }
 
     if (!order.email || !order.name || !Array.isArray(order.items) || order.items.length === 0) {
@@ -283,46 +289,6 @@ app.post("/api/place-order", async (req, res) => {
     });
     placeTransaction();
 
-    const itemsSummary = order.items
-      .map((item) => {
-        const variant = [item.flavor, item.color].filter(Boolean).join(" / ");
-        const variantPart = variant ? ` (${variant})` : "";
-        return `- ${item.name}${variantPart}: ${item.qty} x EUR ${Number(item.price).toFixed(2)}`;
-      })
-      .join("\n");
-    const addressSummary = "Pickup at store (Valencia Vape Atelier)";
-
-    await transporter.sendMail({
-      from: SMTP_FROM,
-      to: order.email,
-      subject: `Reservation confirmed #${orderId}`,
-      text:
-        `Your reservation is confirmed.\n\n` +
-        `Reservation ID: ${orderId}\n` +
-        `Pickup location: ${addressSummary}\n` +
-        `Please visit the store within 7 days to complete payment and collect your items.\n\n` +
-        `Reserved items:\n${itemsSummary}\n\n` +
-        `Estimated total at store: EUR ${(amount / 100).toFixed(2)}`
-    });
-
-    if (ORDER_NOTIFY_EMAIL) {
-      await transporter.sendMail({
-        from: SMTP_FROM,
-        to: ORDER_NOTIFY_EMAIL,
-        subject: `New reservation #${orderId}`,
-        text:
-          `A new reservation has been placed.\n\n` +
-          `Reservation ID: ${orderId}\n` +
-          `Customer: ${order.name}\n` +
-          `Email: ${order.email}\n` +
-          `Phone: ${order.phone || "-"}\n` +
-          `Payment: pay in store\n` +
-          `Fulfillment: ${fulfillmentType}\n` +
-          `Collection deadline: ${new Date(now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString("en-GB")}\n` +
-          `Total: EUR ${(amount / 100).toFixed(2)}`
-      });
-    }
-
     res.json({ orderId });
   } catch (error) {
     console.error("Place order error:", error);
@@ -358,25 +324,6 @@ app.post("/api/admin/orders/:id/complete", async (req, res) => {
   }
 
   try {
-    requireEmailEnv();
-    const items = JSON.parse(order.items_json || "[]");
-    const itemsSummary = items
-      .map((item) => `- ${item.name} x ${item.qty}`)
-      .join("\n");
-
-    await transporter.sendMail({
-      from: SMTP_FROM,
-      to: order.email,
-      subject: `Order ${id} completed / Pedido ${id} completado`,
-      text:
-        `EN:\nThank you for your purchase. Have a great day.\n\n` +
-        `Order ID: ${id}\n` +
-        `Items:\n${itemsSummary}\n\n` +
-        `ES:\nGracias por tu compra. Que tengas un buen dia.\n\n` +
-        `ID del pedido: ${id}\n` +
-        `Productos:\n${itemsSummary}`
-    });
-
     db.prepare("DELETE FROM orders WHERE id = ?").run(id);
     res.json({ ok: true });
   } catch (error) {
@@ -389,29 +336,34 @@ app.post("/api/admin/products", (req, res) => {
 
   const payload = req.body || {};
   const requiredFields = ["name", "description", "category", "brand"];
-  const missing = requiredFields.find((field) => !payload[field]);
+  const missing = requiredFields.find((field) => !String(payload[field] || "").trim());
   if (missing) {
     return res.status(400).json({ error: `${missing} is required` });
   }
-  if (typeof payload.price !== "number" || Number.isNaN(payload.price)) {
+  const parsedPrice = Number(payload.price);
+  if (!Number.isFinite(parsedPrice) || parsedPrice <= 0) {
     return res.status(400).json({ error: "price must be a valid number" });
+  }
+  const parsedStockQty = parseStockQty(payload.stockQty, 0);
+  if (Number.isNaN(parsedStockQty)) {
+    return res.status(400).json({ error: "stockQty must be a non-negative number" });
   }
 
   const id = payload.id || crypto.randomUUID();
   const timestamp = now();
   const product = {
     id,
-    name: payload.name,
-    price: payload.price,
-    description: payload.description,
-    category: payload.category,
-    brand: payload.brand,
-    images: Array.isArray(payload.images) ? payload.images : [],
+    name: String(payload.name).trim(),
+    price: parsedPrice,
+    description: String(payload.description).trim(),
+    category: String(payload.category).trim(),
+    brand: String(payload.brand).trim(),
+    images: normalizeList(payload.images),
     stock: Boolean(payload.stock),
-    stockQty: Number(payload.stockQty ?? 0),
-    specs: Array.isArray(payload.specs) ? payload.specs : [],
-    flavors: Array.isArray(payload.flavors) ? payload.flavors : [],
-    colors: Array.isArray(payload.colors) ? payload.colors : []
+    stockQty: parsedStockQty,
+    specs: normalizeList(payload.specs),
+    flavors: normalizeList(payload.flavors),
+    colors: normalizeList(payload.colors)
   };
 
   try {
@@ -449,41 +401,72 @@ app.patch("/api/admin/products/:id", (req, res) => {
   if (!existing) return res.status(404).json({ error: "Product not found" });
 
   const payload = req.body || {};
+  const parsedPrice =
+    payload.price !== undefined ? Number(payload.price) : Number(existing.price);
+  if (!Number.isFinite(parsedPrice) || parsedPrice <= 0) {
+    return res.status(400).json({ error: "price must be a valid number" });
+  }
+  const parsedStockQty = parseStockQty(payload.stockQty, Number(existing.stock_qty || 0));
+  if (Number.isNaN(parsedStockQty)) {
+    return res.status(400).json({ error: "stockQty must be a non-negative number" });
+  }
+
+  const nextName = String(payload.name ?? existing.name).trim();
+  const nextDescription = String(payload.description ?? existing.description).trim();
+  const nextCategory = String(payload.category ?? existing.category).trim();
+  const nextBrand = String(payload.brand ?? existing.brand).trim();
+  if (!nextName || !nextDescription || !nextCategory || !nextBrand) {
+    return res.status(400).json({ error: "name, description, category and brand are required" });
+  }
+
   const next = {
-    name: payload.name ?? existing.name,
-    price: payload.price ?? Number(existing.price),
-    description: payload.description ?? existing.description,
-    category: payload.category ?? existing.category,
-    brand: payload.brand ?? existing.brand,
-    images: Array.isArray(payload.images) ? payload.images : parseJsonArray(existing.images_json),
+    name: nextName,
+    price: parsedPrice,
+    description: nextDescription,
+    category: nextCategory,
+    brand: nextBrand,
+    images:
+      payload.images !== undefined
+        ? normalizeList(payload.images)
+        : parseJsonArray(existing.images_json),
     stock: typeof payload.stock === "boolean" ? payload.stock : Boolean(existing.stock),
-    stockQty:
-      payload.stockQty !== undefined ? Number(payload.stockQty) : Number(existing.stock_qty || 0),
-    specs: Array.isArray(payload.specs) ? payload.specs : parseJsonArray(existing.specs_json),
-    flavors: Array.isArray(payload.flavors) ? payload.flavors : parseJsonArray(existing.flavors_json),
-    colors: Array.isArray(payload.colors) ? payload.colors : parseJsonArray(existing.colors_json),
+    stockQty: parsedStockQty,
+    specs:
+      payload.specs !== undefined ? normalizeList(payload.specs) : parseJsonArray(existing.specs_json),
+    flavors:
+      payload.flavors !== undefined
+        ? normalizeList(payload.flavors)
+        : parseJsonArray(existing.flavors_json),
+    colors:
+      payload.colors !== undefined
+        ? normalizeList(payload.colors)
+        : parseJsonArray(existing.colors_json),
     updatedAt: now()
   };
 
-  db.prepare(
-    `UPDATE products
-      SET name = ?, price = ?, description = ?, category = ?, brand = ?, images_json = ?, stock = ?, stock_qty = ?, specs_json = ?, flavors_json = ?, colors_json = ?, updated_at = ?
-      WHERE id = ?`
-  ).run(
-    next.name,
-    next.price,
-    next.description,
-    next.category,
-    next.brand,
-    JSON.stringify(next.images),
-    next.stock ? 1 : 0,
-    next.stockQty,
-    JSON.stringify(next.specs),
-    JSON.stringify(next.flavors),
-    JSON.stringify(next.colors),
-    next.updatedAt,
-    req.params.id
-  );
+  try {
+    db.prepare(
+      `UPDATE products
+        SET name = ?, price = ?, description = ?, category = ?, brand = ?, images_json = ?, stock = ?, stock_qty = ?, specs_json = ?, flavors_json = ?, colors_json = ?, updated_at = ?
+        WHERE id = ?`
+    ).run(
+      next.name,
+      next.price,
+      next.description,
+      next.category,
+      next.brand,
+      JSON.stringify(next.images),
+      next.stock ? 1 : 0,
+      next.stockQty,
+      JSON.stringify(next.specs),
+      JSON.stringify(next.flavors),
+      JSON.stringify(next.colors),
+      next.updatedAt,
+      req.params.id
+    );
+  } catch (error) {
+    return res.status(500).json({ error: error.message || "Failed to update product" });
+  }
 
   res.json({
     product: {
